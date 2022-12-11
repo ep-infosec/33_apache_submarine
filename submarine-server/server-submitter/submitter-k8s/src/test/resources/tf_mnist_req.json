@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "name": "tensorflow-dist-mnist",
+    "namespace": "submarine",
+    "framework": "TensorFlow",
+    "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
+    "envVars": {
+      "ENV_1": "ENV1"
+    }
+  },
+  "environment": {
+    "image": "apache/submarine:tf-mnist-with-summaries-1.0"
+  },
+  "spec": {
+    "Ps": {
+      "replicas": 1,
+      "resources": "cpu=4,memory=2048M"
+    },
+    "Worker": {
+      "replicas": 2,
+      "resources": "cpu=2,memory=1024M,nvidia.com/gpu=1"
+    }
+  },
+  "experimentHandlerSpec": {
+      "FILE_SYSTEM_TYPE": "HDFS",
+      "HDFS_HOST": "127.0.0.1",
+      "HDFS_PORT": "9000",
+      "HDFS_SOURCE": "/tmp",
+      "ENABLE_KERBEROS": "false"
+  }
+}

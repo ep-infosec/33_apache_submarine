@@ -1,0 +1,13 @@
+meta:
+  name: "tf-mnist-yaml"
+  namespace: "default"
+  framework: "TensorFlow"
+  cmd: "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150"
+  envVars:
+    ENV_1: "ENV1"
+environment:
+  image: "apache/submarine:tf-mnist-with-summaries-1.0"
+spec:
+  Worker:
+    replicas: 1
+    resources: "cpu=4,memory=2048M"

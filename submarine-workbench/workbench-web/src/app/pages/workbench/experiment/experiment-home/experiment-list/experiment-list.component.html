@@ -1,0 +1,91 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<nz-table
+  id="releaseTable"
+  nzBordered
+  #basicTable
+  [nzData]="experimentList"
+  [nzNoResult]="'No data' | translate"
+  [nzLoading]="isLoading"
+>
+  <thead>
+    <tr>
+      <th>
+        <label nz-checkbox [ngModel]="selectAllChecked" (ngModelChange)="onSelectAllClick($event)"></label>
+      </th>
+      <th>{{ 'Experiment Name' | translate }}</th>
+      <th>{{ 'Experiment ID' | translate }}</th>
+      <th>{{ 'Tags' | translate }}</th>
+      <th>{{ 'Status' | translate }}</th>
+      <th>{{ 'Finished Time' | translate }}</th>
+      <th>{{ 'Created Time' | translate }}</th>
+      <th>{{ 'Running Time' | translate }}</th>
+      <th>{{ 'Duration' | translate }}</th>
+      <th>{{ 'Action' | translate }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of basicTable.data; let i = index">
+      <td>
+        <label nz-checkbox [(ngModel)]="checkedList[i]"></label>
+      </td>
+      <td>{{ data.spec.meta.name }}</td>
+      <td>
+        <a [routerLink]="['info', data.experimentId]">
+          {{ data.experimentId }}
+        </a>
+      </td>
+      <td>
+        <nz-tag *ngFor="let tag of data.spec.meta.tags">{{tag}}</nz-tag>
+      </td>
+      <td>
+        <nz-tag [nzColor]="statusColor[data.status]">{{ data.status | translate}}</nz-tag>
+      </td>
+      <td>{{ data.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
+      <td>{{ data.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
+      <td>{{ data.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
+      <td>{{ data.duration }}</td>
+      <td class="td-action">
+        <a (click)="initModal.emit({ initMode: 'clone', initFormType: 'customized', id: null, spec: data.spec })">
+          {{ 'Clone' | translate }}
+        </a>
+        <nz-divider nzType="vertical"></nz-divider>
+        <a
+          (click)="
+            initModal.emit({ initMode: 'update', initFormType: 'customized', id: data.experimentId, spec: data.spec })
+          "
+        >
+          {{ 'Update' | translate }}
+        </a>
+        <nz-divider nzType="vertical"></nz-divider>
+        <a
+          nz-popconfirm
+          nzPlacement="left"
+          nzTitle="{{ 'Are you sure you want to delete?' | translate }}"
+          nzCancelText="{{ 'Cancel' | translate }}"
+          nzOkText="{{ 'Ok' | translate }}"
+          (nzOnConfirm)="onDeleteExperiment(data.experimentId)"
+        >
+          {{ 'Delete' | translate }}
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

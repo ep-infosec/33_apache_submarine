@@ -1,0 +1,71 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<nz-table id="environmentTable" nzBordered #basicTable [nzData]="environmentList" [nzNoResult]="'No data'">
+  <thead>
+    <tr>
+      <th>Environment Name</th>
+      <th>Docker image</th>
+      <th>Preview</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of basicTable.data; let i = index">
+      <td>{{ data.environmentSpec.name }}</td>
+      <td>{{ data.environmentSpec.dockerImage }}</td>
+      <td>
+        <a
+          id="anchor-preview{{ i }}"
+          class="anchor-preview"
+          nz-popover
+          nzPopoverTrigger="click"
+          nzPopoverTitle="Preview environment Spec"
+          nzPopoverPlacement="left"
+          nzType="dashed"
+          [nzPopoverContent]="contentTemplate"
+        >
+          <i nz-icon id="icon-preview{{ i }}" class="icon-preview" nzType="eye" nzTheme="fill"></i>
+        </a>
+        <ng-template #contentTemplate id="test">
+          <div style="white-space: pre-wrap">
+            {{ data.environmentSpec | json }}
+          </div>
+        </ng-template>
+      </td>
+      <td>
+        <a id="btn-downloadEnvironmentSpec{{ i }}" (click)="onDownloadEnvironmentSpec(data.environmentSpec)">
+          Download
+        </a>
+        <nz-divider nzType="vertical"></nz-divider>
+        <a
+          id="btn-deleteEnvironment{{ i }}"
+          nz-popconfirm
+          nzPlacement="left"
+          nzTitle="Are you sure you want to delete?"
+          nzCancelText="Cancel"
+          nzOkText="Ok"
+          (nzOnConfirm)="onDeleteEnvironment(data.environmentSpec.name)"
+        >
+          Delete
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

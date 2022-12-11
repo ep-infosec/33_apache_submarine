@@ -1,0 +1,49 @@
+{
+  "name": "tf-mnist-test_1",
+  "author": "author",
+  "description": "This is a template to run tf-mnist.",
+  "parameters": [
+    {
+      "name": "learning_rate",
+      "value": 0.1,
+      "required": false,
+      "description": "The parameter of train mnist."
+    },
+    {
+      "name": "batch_size",
+      "value": 150,
+      "required": false,
+      "description": "The parameter of train mnist."
+    },
+    {
+      "name": "experiment_name",
+      "value": "tf-mnist-test_1",
+      "required": true,
+      "description": "experiment name, you should change it to avoid duplication with other experiment names."
+    }
+  ],
+  "experimentSpec": {
+    "meta": {
+      "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate={{learning_rate}} --batch_size={{batch_size}}",
+      "name": "{{experiment_name}}",
+      "envVars": {
+        "ENV1": "ENV1"
+      },
+      "framework": "TensorFlow",
+      "namespace": "default"
+    },
+    "spec": {
+      "Ps": {
+        "replicas": 1,
+        "resources": "cpu=1,memory=1024M"
+      },
+      "Worker": {
+        "replicas": 1,
+        "resources": "cpu=1,memory=1024M"
+      }
+    },
+    "environment": {
+      "image": "apache/submarine:tf-mnist-with-summaries-1.0"
+    }
+  }
+}

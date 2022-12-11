@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# export JAVA_HOME=java
+
+# Debug Submarine server
+# export SUBMARINE_SERVER_JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"
+
+# Set Submarine server memory
+# export SUBMARINE_SERVER_MEM="-Xms1024m -Xmx1024m -XX:MaxPermSize=512m"
+
+# Set Submarine server classpath. If you want to visit hdfs, just add hadoop
+# configuration path.
+export SUBMARINE_SERVER_CLASSPATH+=":/usr/local/hadoop/etc/hadoop"

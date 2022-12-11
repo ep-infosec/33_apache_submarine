@@ -1,0 +1,530 @@
+<?xml version="1.0"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.apache.submarine</groupId>
+  <artifactId>submarine</artifactId>
+  <version>0.8.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Submarine</name>
+  <description>Submarine project</description>
+  <url>https://submarine.apache.org</url>
+
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>17</version>
+  </parent>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <properties>
+    <!-- language versions -->
+    <java.version>1.8</java.version>
+    <go.version>1.11.8</go.version>
+
+    <!-- plugin versions -->
+    <plugin.jar.version>2.4</plugin.jar.version>
+    <plugin.compiler.version>3.1</plugin.compiler.version>
+    <plugin.shade.version>3.2.1</plugin.shade.version>
+    <plugin.enforcer.version>1.3.1</plugin.enforcer.version>
+    <plugin.checkstyle.version>2.17</plugin.checkstyle.version>
+    <plugin.war.version>2.3</plugin.war.version>
+    <plugin.maven.antrun.version>1.8</plugin.maven.antrun.version>
+    <plugin.maven.jar.version>3.0.2</plugin.maven.jar.version>
+    <plugin.maven.assembly.version>3.3.0</plugin.maven.assembly.version>
+
+    <!-- submarine shaded dependency prefix-->
+    <shaded.dependency.prefix>org.apache.submarine.shaded</shaded.dependency.prefix>
+
+    <!--library versions-->
+    <tony.version>0.4.7</tony.version>
+    <jersey.version>2.35</jersey.version>
+    <jersey.servlet.version>1.13</jersey.servlet.version>
+    <jetty.version>9.4.35.v20201120</jetty.version>
+    <javax.ws.rsapi.version>2.1</javax.ws.rsapi.version>
+    <pagehelper.version>5.1.10</pagehelper.version>
+
+    <gson.version>2.8.9</gson.version>
+    <jackson-databind.version>2.11.0</jackson-databind.version>
+    <jackson-annotations.version>2.11.0</jackson-annotations.version>
+    <jackson-core.version>2.11.0</jackson-core.version>
+    <jackson-module-jaxb-annotations.version>2.11.0</jackson-module-jaxb-annotations.version>
+    <commons-configuration.version>1.10</commons-configuration.version>
+    <commons-httpclient.version>3.1</commons-httpclient.version>
+
+    <minio.version>7.1.4</minio.version>
+
+    <cglib.version>3.3.0</cglib.version>
+    <jboss.logging.version>3.4.2.Final</jboss.logging.version>
+    <bytebuddy.version>1.11.20</bytebuddy.version>
+    <mybatis.version>3.2.8</mybatis.version>
+    <mysql-connector-java.version>5.1.41</mysql-connector-java.version>
+    <h2-connector-java.version>1.4.194</h2-connector-java.version>
+    <grpc.version>1.25.0</grpc.version>
+
+    <!-- frontend maven plugin related versions-->
+    <plugin.frontend.version>1.6</plugin.frontend.version>
+    <node.version>v14.16.0</node.version>
+    <yarn.version>v1.10.1</yarn.version>
+    <npm.version>6.14.11</npm.version>
+    <io.swagger.version>2.1.2</io.swagger.version>
+
+    <slf4j.version>1.7.25</slf4j.version>
+    <log4j.version>1.2.17</log4j.version>
+    <commons.logging.version>1.1.3</commons.logging.version>
+    <commons.cli.version>1.2</commons.cli.version>
+    <snakeyaml.version>1.32</snakeyaml.version>
+    <httpcore.version>4.4.4</httpcore.version>
+    <httpclient.version>4.5.2</httpclient.version>
+    <commons-lang.version>2.6</commons-lang.version>
+    <commons-lang3.version>3.4</commons-lang3.version>
+    <commons-io.version>2.11.0</commons-io.version>
+    <commons-codec.version>1.5</commons-codec.version>
+    <junit.version>4.12</junit.version>
+    <selenium.version>3.8.1</selenium.version>
+    <jarchivelib.version>0.7.1</jarchivelib.version>
+    <jsr305.version>1.3.9</jsr305.version>
+    <mockito.version>2.23.4</mockito.version>
+    <wiremock.version>2.33.2</wiremock.version>
+    <powermock.version>1.6.4</powermock.version>
+    <guava.version>30.0-jre</guava.version>
+    <testng.version>6.4</testng.version>
+    <avro.version>1.8.2</avro.version>
+    <httpclient.version>4.5.2</httpclient.version>
+    <jackson-dataformat-yaml.version>2.9.10</jackson-dataformat-yaml.version>
+    <objenesis.version>2.6</objenesis.version>
+    <sshd-core.version>1.1.0</sshd-core.version>
+    <codehaus-jackson.version>1.9.13</codehaus-jackson.version>
+    <commons-text.version>1.4</commons-text.version>
+    <zip4j.version>1.3.2</zip4j.version>
+    <commons-collections.version>3.2.2</commons-collections.version>
+    <nimbus-jose-jwt.version>7.9</nimbus-jose-jwt.version>
+    <mybatis-generator.version>1.3.7</mybatis-generator.version>
+    <derby.version>10.15.1.3</derby.version>
+    <zeppelin.version>0.9.0-preview1</zeppelin.version>
+    <jgit.version>5.13.0.202109080827-r</jgit.version>
+    <atomix.version>3.1.5</atomix.version>
+    <json.version>20211205</json.version>
+    <!--  Submarine on Kubernetes  -->
+    <k8s.client-java.version>11.0.1</k8s.client-java.version>
+    <jersey.test-framework>2.27</jersey.test-framework>
+    <!-- integration test-->
+    <plugin.failsafe.version>2.17</plugin.failsafe.version>
+    <!--  embedded-ldap-junit  -->
+    <embedded-ldap-junit.version>0.7</embedded-ldap-junit.version>
+    <jaxb-api.version>2.2.11</jaxb-api.version>
+    <commons-compress.version>1.21</commons-compress.version>
+    <guice-servlet.version>3.0</guice-servlet.version>
+    <guice.version>3.0</guice.version>
+    <!--  server API  -->
+    <protobuf-java.version>3.14.0</protobuf-java.version>
+    <joda-time.version>2.10.8</joda-time.version>
+    <!--  pac4j  -->
+    <pac4j.version>4.5.6</pac4j.version>
+  </properties>
+
+  <modules>
+    <module>submarine-commons</module>
+    <module>submarine-client</module>
+    <module>submarine-serve</module>
+    <module>submarine-server</module>
+    <module>submarine-all</module>
+    <module>submarine-workbench</module>
+    <module>submarine-dist</module>
+    <module>submarine-test</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+
+      <!--  Unit Tests  -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>${testng.version}</version>
+      </dependency>
+
+      <!--  Submarine on Kubernetes  -->
+      <dependency>
+        <groupId>io.kubernetes</groupId>
+        <artifactId>client-java</artifactId>
+        <version>${k8s.client-java.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons-lang3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>${jaxb-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${commons-compress.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject.extensions</groupId>
+        <artifactId>guice-servlet</artifactId>
+        <version>${guice-servlet.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson-annotations.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson-annotations.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>${guice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.nimbusds</groupId>
+        <artifactId>nimbus-jose-jwt</artifactId>
+        <version>${nimbus-jose-jwt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-configuration</groupId>
+        <artifactId>commons-configuration</artifactId>
+        <version>${commons-configuration.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>${commons-lang.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId>
+        <version>${commons-httpclient.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.ws.rs</groupId>
+        <artifactId>javax.ws.rs-api</artifactId>
+        <version>${javax.ws.rsapi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-xc</artifactId>
+        <version>${codehaus-jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-jaxrs</artifactId>
+        <version>${codehaus-jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty-shaded</artifactId>
+        <version>${grpc.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-protobuf</artifactId>
+        <version>${grpc.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-stub</artifactId>
+        <version>${grpc.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>${gson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${commons.logging.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>${snakeyaml.version}</version>
+      </dependency>
+      <!--  Submarine Server  -->
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>${jboss.logging.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>${bytebuddy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>${joda-time.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <profiles>
+
+    <profile>
+     <id>clover</id>
+     <activation>
+       <activeByDefault>false</activeByDefault>
+       <property>
+         <name>clover</name>
+       </property>
+     </activation>
+     <dependencies>
+       <dependency>
+         <groupId>com.cenqua.clover</groupId>
+         <artifactId>clover</artifactId>
+       </dependency>
+     </dependencies>
+    </profile>
+
+    <profile>
+      <id>rat</id>
+      <activation>
+        <property>
+          <name>skipRat</name>
+        </property>
+      </activation>
+    </profile>
+  </profiles>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${plugin.compiler.version}</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${plugin.enforcer.version}</version>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <configuration>
+              <rules>
+                <DependencyConvergence/>
+              </rules>
+              <failFast>true</failFast>
+            </configuration>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${plugin.checkstyle.version}</version>
+        <configuration>
+          <skip>true</skip>
+          <failOnViolation>false</failOnViolation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <sourceDirectories>${project.build.sourceDirectory}</sourceDirectories>
+          <testSourceDirectory>${project.build.testSourceDirectory}</testSourceDirectory>
+          <configLocation>dev-support/maven-config/checkstyle.xml</configLocation>
+          <outputFile>${project.build.directory}/checkstyle-output.xml</outputFile>
+          <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+          <outputEncoding>${project.reporting.outputEncoding}</outputEncoding>
+        </configuration>
+        <executions>
+          <execution>
+            <id>checkstyle-fail-build</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <failOnViolation>true</failOnViolation>
+            </configuration>
+          </execution>
+          <execution>
+            <id>checkstyle-gen-html-report</id>
+            <phase>install</phase>
+            <goals>
+              <goal>checkstyle-aggregate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.scalastyle</groupId>
+        <artifactId>scalastyle-maven-plugin</artifactId>
+        <version>1.0.0</version>
+        <configuration>
+          <verbose>false</verbose>
+          <failOnViolation>true</failOnViolation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <failOnWarning>false</failOnWarning>
+          <sourceDirectory>${project.basedir}/src/test/scala</sourceDirectory>
+          <testSourceDirectory>${project.basedir}/src/main/scala</testSourceDirectory>
+          <configLocation>dev-support/maven-config/scalastyle-config.xml</configLocation>
+          <outputFile>${project.build.directory}/scalastyle-output.xml</outputFile>
+          <outputEncoding>UTF-8</outputEncoding>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <excludes>
+            <exclude>.git/</exclude>
+            <exclude>.github/**</exclude>
+            <exclude>.gitignore</exclude>
+            <exclude>.gitmodules</exclude>
+            <exclude>.editorconfig</exclude>
+            <exclude>LICENSE</exclude>
+            <exclude>license_header</exclude>
+            <exclude>**/*.iml</exclude>
+            <exclude>**/*.la</exclude>
+            <exclude>**/*.svg</exclude>
+            <exclude>**/*.png</exclude>
+            <exclude>**/*.avsc</exclude>
+            <exclude>**/log4j.properties</exclude>
+            <exclude>**/*.md</exclude>
+            <exclude>**/*.proto</exclude>
+            <exclude>**/*.txt</exclude>
+            <exclude>**/*.xml</exclude>
+            <exclude>**/*.html</exclude>
+            <exclude>**/*.xsd</exclude>
+            <exclude>**/*.json</exclude>
+            <exclude>**/*.conf</exclude>
+            <exclude>**/*.libsvm</exclude>
+            <exclude>**/*.yaml</exclude>
+            <exclude>**/*.yapf</exclude>
+            <exclude>**/*.libsvm</exclude>
+            <exclude>**/*.prettierrc</exclude>
+            <exclude>**/*.prettierignore</exclude>
+            <exclude>**/src/main/resources/META-INF/services/org.apache.hadoop.security.SecurityInfo</exclude>
+            <exclude>**/src/test/resources/typicalHistFolder/job1/application123-1-1-user1-SUCCEEDED.jhist</exclude>
+            <exclude>**/conf/routes</exclude>
+            <exclude>**/submitter-yarnservice/target/**</exclude>
+            <exclude>**/src/test/resources/config</exclude>
+            <exclude>licenses/**</exclude>
+            <exclude>licenses-binary/**</exclude>
+            <exclude>NOTICE-binary</exclude>
+            <exclude>**/go.mod</exclude>
+            <exclude>**/go.sum</exclude>
+            <exclude>**/*.ipynb</exclude>
+            <exclude>**/.nojekyll</exclude>
+            <exclude>**/yarn.lock</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.7</version>
+        <configuration>
+          <destFile>${basedir}/target/jacoco.exec</destFile>
+          <dataFile>${basedir}/target/jacoco.exec</dataFile>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default-prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

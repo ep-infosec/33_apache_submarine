@@ -1,0 +1,80 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+name: submarine-operator
+replicas: 1
+image: apache/submarine:operator-0.8.0-SNAPSHOT
+# ImagePullSecrets for submarine operator, list of secrets in the same namespace
+# to use for pulling any images in pods that reference this ServiceAccount.
+# Must be set with private docker registry.
+imagePullSecrets: []
+# dev is to tell helm to install submarine-operator or not
+dev: false
+# storageClass is for dynamically creating persistent volumes
+storageClass:
+  # reclaimPolicy is to determine the action after the persistent volume is released
+  reclaimPolicy: Delete
+  # volumeBindingMode controls when volume binding and dynamically provisioning should occur
+  volumeBindingMode: Immediate
+  # provisioner is to determine what volume plugin is used for provisioning PVs
+  provisioner: k8s.io/minikube-hostpath
+  # parameters describe volumes belonging to the storage class
+  parameters: {}
+
+# k8s cluster type. can be: kubernetes or openshift
+clusterType: kubernetes
+
+# PodSecurityPolicy configuration
+# ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  # Specifies whether a PodSecurityPolicy should be created,
+  # This configuration enables the database/minio/server to set securityContext.runAsUser
+  create: true
+
+# Istio configuration
+istio:
+  enabled: true
+  # Use Istio default gateway implementation,
+  # you can find the specified gateway service with this labels by the command:
+  # kubectl get service -n istio-system -l istio=ingressgateway
+  gatewaySelector: 
+    istio: ingressgateway
+
+# training operator
+training-operator:
+  # If you have already deployed a kubeflow training operator,
+  # you can change this configuration to `false` to prevent conflicts
+  enabled: true
+
+# notebook controller
+notebook-controller:
+  # If you have already deployed a kubeflow notebook controller,
+  # you can change this configuration to `false` to prevent conflicts
+  enabled: true
+
+# seldon-core-operator configuration
+seldon-core-operator:
+  # If you have already deployed a seldon core operator,
+  # you can change this configuration to `false` to prevent conflicts
+  enabled: true
+  istio:
+    enabled: true
+    # We temporarily set the namespace to submarine.
+    # If helm is deployed in another namespace, this will need to be modified as well `${namespace}/seldon-gateway`
+    gateway: submarine/seldon-gateway
+  executor:
+    defaultEnvSecretRefName: submarine-serve-secret 2> /dev/null

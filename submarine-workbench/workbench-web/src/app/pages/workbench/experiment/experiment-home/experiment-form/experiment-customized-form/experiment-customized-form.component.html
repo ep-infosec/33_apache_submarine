@@ -1,0 +1,312 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+-->
+
+<div>
+  <nz-steps [nzCurrent]="step">
+    <nz-step nzTitle="{{'First Step' | translate}}"></nz-step>
+    <nz-step nzTitle="{{'Second Step' | translate}}"></nz-step>
+    <nz-step nzTitle="{{'Preview' | translate}}"></nz-step>
+  </nz-steps>
+</div>
+<div>
+  <form [formGroup]="experiment">
+    <div [ngSwitch]="step" style="margin-top: 30px">
+      <div *ngSwitchCase="0" id="firstStep">
+        <div class="single-field-group">
+          <label for="experimentName">
+            <span class="red-star">*</span>
+            {{'Experiment Name' | translate}}
+          </label>
+          <input
+            nz-input
+            type="text"
+            name="experimentName"
+            id="experimentName"
+            formControlName="experimentName"
+            placeholder="mnist-example"
+          />
+          <div class="alert-message-container">
+            <div class="alert-message" *ngIf="experiment.get('experimentName').hasError('pattern')">
+              {{'Only letters(a - z), numbers(0 - 9), and hyphens are allowed, but you can`t start or end with hyphens.' | translate}}
+            </div>
+          </div>
+        </div>
+        <div class="single-field-group">
+          <label for="description">{{'Description' | translate}}</label>
+          <textarea
+            nz-input
+            [nzAutosize]="{ minRows: 1, maxRows: 4 }"
+            name="description"
+            formControlName="description"
+            id="description"
+            placeholder="{{'Run distributed mnist example' | translate}}"
+          ></textarea>
+        </div>
+        <div class="single-field-group">
+          <label for="tags">
+            {{'Tags' | translate}}
+          </label>
+          <nz-select
+            formControlName="tags"
+            nzMode="tags"
+            name = "tags"
+            [nzTokenSeparators]="[',']"
+            nzPlaceHolder="AutoEncoder"
+          >
+            <nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
+          </nz-select>
+        </div>
+        <div class="single-field-group">
+          <label for="cmd">
+            <span class="red-star">*</span>
+            {{'Command' | translate}}
+          </label>
+          <textarea
+            nz-input
+            name="cmd"
+            formControlName="cmd"
+            placeholder="python /var/tf_mnist/mnist_with_summaries.py --max_steps=100"
+            id="cmd"
+            [nzAutosize]="{ minRows: 2, maxRows: 4 }"
+          ></textarea>
+        </div>
+        <div class="single-field-group">
+          <label for="image">
+            <span class="red-star">*</span>
+            {{'Image'| translate}}
+          </label>
+          <nz-select nzShowSearch [nzDropdownRender]="renderTemplate" name="image" formControlName="image" id="image">
+            <nz-option *ngFor="let image of imageList" [nzValue]="image" [nzLabel]="image"></nz-option>
+          </nz-select>
+          <ng-template #renderTemplate>
+            <nz-divider></nz-divider>
+            <div class="container">
+              <input type="text" nz-input #inputElement />
+              <a class="add-item" (click)="addItem(inputElement)">
+                <i nz-icon nzType="plus"></i>
+                {{'Add item' | translate}}
+              </a>
+            </div>
+          </ng-template>
+        </div>
+        <div style="margin-bottom: 10px">
+          <button
+            nz-button
+            style="display: block; margin: auto"
+            id="advancedBtn"
+            nzType="default"
+            (click)="ADVANCED = !ADVANCED"
+          >
+            {{'Advanced' | translate}}
+            <i nz-icon [nzType]="ADVANCED ? 'up' : 'down'"></i>
+          </button>
+        </div>
+        <div *ngIf="ADVANCED" class="single-field-group">
+          <label for="git-repo">Git repository</label>
+          <nz-input-group [nzSuffix]="suffixTemplateInfo">
+            <input
+              nz-input
+              type="text"
+              name="git-repo"
+              id="git-repo"
+              placeholder="https://github.com/apache/submarine.git"
+              formControlName="gitRepo"
+            />
+          </nz-input-group>
+          <ng-template #suffixTemplateInfo>
+            <i nz-icon nz-tooltip nzTitle="{{'Copy git repo to /code/current in container.' | translate}}" nzType="info-circle"></i>
+          </ng-template>
+        </div>
+        <div *ngIf="ADVANCED">
+          <ul formArrayName="envs" class="list-container">
+            <ng-container *ngFor="let env of envs.controls; index as i">
+              <li [formGroupName]="i" class="input-group">
+                <div style="margin-left: 30%">
+                  <label for="key{{ i }}">Key</label>
+                  <input nz-input name="key{{ i }}" placeholder="Key" formControlName="key" id="key{{ i }}" />
+                </div>
+                <div style="margin-left: 0">
+                  <label for="value{{ i }}">Value</label>
+                  <input nz-input name="value{{ i }}" placeholder="Value" formControlName="value" id="value{{ i }}" />
+                </div>
+                <i nz-icon nzType="close-circle" nzTheme="fill" (click)="deleteItem(envs, i)"></i>
+              </li>
+              <div
+                class="alert-message"
+                *ngIf="env.get('key').dirty | logicalAnd: env.get('value').dirty:env.hasError('envMissing')"
+              >
+                {{ env.getError('envMissing') }}
+              </div>
+              <div
+                class="alert-message"
+                *ngIf="env.get('key').dirty | logicalAnd: env.get('key').hasError('duplicateError')"
+              >
+                {{ env.get('key').getError('duplicateError') }}
+              </div>
+            </ng-container>
+          </ul>
+          <button nz-button id="env-btn" style="display: block; margin: auto" nzType="primary" (click)="onCreateEnv()">
+            {{'Add new environment variable' | translate}}
+          </button>
+          <br />
+        </div>
+      </div>
+      <div *ngSwitchCase="1" id="secondStep">
+        <nz-radio-group [(ngModel)]="framework" [ngModelOptions]="{ standalone: true }" id="jobs-container">
+          <label nz-radio nzValue="Tensorflow" (click)="deleteAllItem(specs); jobTypes='Distributed Tensorflow'">
+            Distributed Tensorflow
+          </label>
+          <label nz-radio nzValue="Pytorch" (click)="deleteAllItem(specs); jobTypes='Distributed Pytorch'">
+            Distributed PyTorch
+          </label>
+          <label nz-radio nzValue="XGBoost" (click)="deleteAllItem(specs); jobTypes='Distributed XGBoostJob'">
+            Distributed XGBoostJob
+          </label>
+          <label
+            nz-radio
+            nzValue="Standalone"
+            (click)="deleteAllItem(specs); onCreateSpec(); jobTypes = 'Standalone Script'"
+          >
+            Standalone Script
+          </label>
+        </nz-radio-group>
+        <label class="pg3-form-label"></label>
+        <button *ngIf="framework !== 'Standalone'" nz-button id="spec-btn" nzType="default" (click)="onCreateSpec()">
+          Add new spec
+        </button>
+        <ul formArrayName="specs" class="list-container">
+          <ng-container *ngFor="let spec of specs.controls; index as i">
+            <li *ngIf="i | indexInRange: currentSpecPage:PAGESIZE" [formGroupName]="i" class="input-group">
+              <div id="spec{{ i }}" *ngIf="framework !== 'Standalone'">
+                <label>Spec name</label>
+                <nz-select formControlName="name" nzPlaceHolder="Spec name" [ngSwitch]="framework">
+                  <div *ngSwitchCase="'Tensorflow'">
+                    <nz-option *ngFor="let spec of TF_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
+                  </div>
+                  <div *ngSwitchCase="'Pytorch'">
+                    <nz-option *ngFor="let spec of PYTORCH_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
+                  </div>
+                  <div *ngSwitchCase="'XGBoost'">
+                    <nz-option *ngFor="let spec of XGBOOST_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
+                  </div>
+                </nz-select>
+              </div>
+              <div *ngIf="framework !== 'Standalone'">
+                <label>Number of Replica</label>
+                <input
+                  nz-input
+                  name="replica{{ i }}"
+                  type="number"
+                  placeholder="number of replica"
+                  formControlName="replicas"
+                />
+              </div>
+              <div>
+                <label>Number of cpu</label>
+                <input nz-input name="cpu{{ i }}" type="number" placeholder="number of cpu" formControlName="cpus" />
+              </div>
+              <div>
+                <label>Number of gpu</label>
+                <input nz-input name="gpu{{ i }}" type="number" placeholder="number of gpu" formControlName="gpus" />
+              </div>
+              <div id="memory{{ i }}">
+                <label>Memory</label>
+                <div formGroupName="memory" class="memory-input-group">
+                  <input
+                    nz-input
+                    name="memory{{ i }}"
+                    type="number"
+                    step="1024"
+                    placeholder="Enter number"
+                    formControlName="num"
+                  />
+                  <nz-select formControlName="unit">
+                    <nz-option *ngFor="let unit of MEMORY_UNITS" [nzValue]="unit" [nzLabel]="unit"></nz-option>
+                  </nz-select>
+                </div>
+              </div>
+              <i nz-icon nzType="close-circle" nzTheme="fill" class="delete-icon" (click)="deleteItem(specs, i)"></i>
+            </li>
+            <div
+              class="alert-message"
+              *ngIf="spec.get('name').dirty | logicalAnd: spec.get('memory').dirty:spec.hasError('specError')"
+            >
+              {{ spec.getError('specError') }}
+            </div>
+
+            <div
+              class="alert-message"
+              *ngIf="spec.get('name').dirty | logicalAnd: spec.get('name').hasError('duplicateError')"
+            >
+              {{ spec.get('name').getError('duplicateError') }}
+            </div>
+            <div
+              class="alert-message"
+              *ngIf="spec.get('memory').dirty | logicalAnd: spec.get('memory').hasError('memoryPatternError')"
+            >
+              {{ spec.get('memory').getError('memoryPatternError') }}
+            </div>
+            <div
+              class="alert-message"
+              *ngIf="spec.get('replicas').dirty | logicalAnd: spec.get('replicas').hasError('min')"
+            >
+              replicas must be at least 1
+            </div>
+            <div class="alert-message" *ngIf="spec.get('cpus').dirty | logicalAnd: spec.get('cpus').hasError('min')">
+              cpus must be at least 1
+            </div>
+            <div class="alert-message" *ngIf="spec.get('gpus').dirty | logicalAnd: spec.get('gpus').hasError('min')">
+              cpus must be at least 0
+            </div>
+          </ng-container>
+        </ul>
+        <nz-pagination
+          [(nzPageIndex)]="currentSpecPage"
+          [nzPageSize]="PAGESIZE"
+          [nzTotal]="specs.controls.length"
+          nzSimple
+        ></nz-pagination>
+      </div>
+      <div *ngSwitchCase="2" id="previewPage">
+        <nz-descriptions nzTitle="{{ jobTypes }}" nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 2, xs: 1 }">
+          <nz-descriptions-item nzTitle="Name">{{ finalExperimentSpec.meta.name }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Command" [nzSpan]="2">
+            {{ finalExperimentSpec.meta.cmd }}
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Image" [nzSpan]="2">
+            {{ finalExperimentSpec.environment.image }}
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Environment Variables" [nzSpan]="2">
+            <span *ngFor="let item of finalExperimentSpec.meta.envVars | keyvalue; let isLast = last">
+              {{ item.key }}={{ item.value }}{{ isLast ? '' : ', ' }}
+            </span>
+          </nz-descriptions-item>
+          <div *ngFor="let item of finalExperimentSpec.spec | keyvalue">
+            <nz-descriptions-item nzTitle="{{ item.key }}" [nzSpan]="2">
+              {{ item.value.resources }}
+            </nz-descriptions-item>
+          </div>
+          <div *ngIf="finalExperimentSpec.code">
+            <nz-descriptions-item nzTitle="Git repository">{{ finalExperimentSpec.code.url }}</nz-descriptions-item>
+          </div>
+        </nz-descriptions>
+      </div>
+    </div>
+  </form>
+</div>
